@@ -14,7 +14,7 @@ enum Entry {
 }
 
 fn main() {
-    let input = fs::read("./input.txt").unwrap();
+    let input = fs::read_to_string("./input.txt").unwrap();
     let result1 = part1(&input);
     let result2 = part2(&input);
 
@@ -22,21 +22,17 @@ fn main() {
     println!("The result of part 2 is: {result2}");
 }
 
-fn part1(input: &[u8]) -> u32 {
-    let chars = str::from_utf8(input).unwrap();
-
-    Schematic::parse(chars)
+fn part1(input: &str) -> u32 {
+    Schematic::parse(input)
         .parts()
         .iter()
         .map(|(number, _)| number)
         .sum()
 }
 
-fn part2(input: &[u8]) -> u32 {
-    let chars = str::from_utf8(input).unwrap();
-
+fn part2(input: &str) -> u32 {
     // generate list of parts and gears
-    let parts = Schematic::parse(chars).parts();
+    let parts = Schematic::parse(input).parts();
     let gears = {
         let mut gears = parts
             .iter()
@@ -68,7 +64,7 @@ fn part2(input: &[u8]) -> u32 {
 impl Schematic {
     fn parse(input: &str) -> Self {
         let entries = input
-            .split('\n')
+            .lines()
             .map(|line| {
                 line.chars()
                     .map(|entry| match entry {
@@ -176,13 +172,13 @@ mod test {
 
     #[test]
     fn test1() {
-        let input = fs::read("./test.txt").unwrap();
+        let input = fs::read_to_string("./test.txt").unwrap();
         assert_eq!(part1(&input), 4361)
     }
 
     #[test]
     fn test2() {
-        let input = fs::read("./test.txt").unwrap();
+        let input = fs::read_to_string("./test.txt").unwrap();
         assert_eq!(part2(&input), 467835)
     }
 }

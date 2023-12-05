@@ -6,7 +6,7 @@ struct CubeGame {
 }
 
 fn main() {
-    let input = fs::read("./input.txt").unwrap();
+    let input = fs::read_to_string("./input.txt").unwrap();
     let result1 = part1(&input);
     let result2 = part2(&input);
 
@@ -14,22 +14,18 @@ fn main() {
     println!("The result of part 2 is: {result2}");
 }
 
-fn part1(input: &[u8]) -> u32 {
-    let chars = str::from_utf8(input).unwrap();
-
-    chars
-        .split('\n')
+fn part1(input: &str) -> u32 {
+    input
+        .lines()
         .map(CubeGame::parse)
         .filter(|cubegame| cubegame.is_possible([12, 13, 14]))
         .map(|cubegame| cubegame.id)
         .sum()
 }
 
-fn part2(input: &[u8]) -> u32 {
-    let chars = str::from_utf8(input).unwrap();
-
-    chars
-        .split('\n')
+fn part2(input: &str) -> u32 {
+    input
+        .lines()
         .map(CubeGame::parse)
         .map(|cubegame| cubegame.power())
         .sum()
@@ -91,13 +87,13 @@ mod test {
 
     #[test]
     fn test1() {
-        let input = fs::read("./test.txt").unwrap();
+        let input = fs::read_to_string("./test.txt").unwrap();
         assert_eq!(part1(&input), 8)
     }
 
     #[test]
     fn test2() {
-        let input = fs::read("./test.txt").unwrap();
+        let input = fs::read_to_string("./test.txt").unwrap();
         assert_eq!(part2(&input), 2286)
     }
 }
