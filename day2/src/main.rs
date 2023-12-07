@@ -17,7 +17,7 @@ fn main() {
 fn part1(input: &str) -> u32 {
     input
         .lines()
-        .map(CubeGame::parse)
+        .map(|line| CubeGame::parse(line).unwrap())
         .filter(|cubegame| cubegame.is_possible([12, 13, 14]))
         .map(|cubegame| cubegame.id)
         .sum()
@@ -26,41 +26,37 @@ fn part1(input: &str) -> u32 {
 fn part2(input: &str) -> u32 {
     input
         .lines()
-        .map(CubeGame::parse)
+        .map(|line| CubeGame::parse(line).unwrap())
         .map(|cubegame| cubegame.power())
         .sum()
 }
 
 impl CubeGame {
-    fn parse(input: &str) -> Self {
-        let (header, data) = input.split_once(": ").unwrap();
+    fn parse(input: &str) -> Option<Self> {
+        let (id, game) = input.trim_start_matches("Game ").split_once(": ")?;
+        let id = id.parse().ok()?;
 
-        // process header
-        let (title, id) = header.split_once(' ').unwrap();
-        assert_eq!(title, "Game");
-        let id = id.parse::<u32>().unwrap();
-
-        // process data
-        let cubes = data
+        // process game
+        let cubes = game
             .split("; ")
             .map(|hand| {
                 let mut colours = [0, 0, 0];
-                hand.split(", ").for_each(|colour_amount| {
-                    let (amount, colour) = colour_amount.split_once(' ').unwrap();
-                    let amount = amount.parse::<u32>().unwrap();
+                hand.split(", ").for_each(|action| {
+                    let (n, colour) = action.split_once(' ').unwrap();
+                    let n = n.parse().unwrap();
                     let colour_id = match colour {
                         "red" => 0,
                         "green" => 1,
                         "blue" => 2,
                         _ => panic!(),
                     };
-                    colours[colour_id] = amount;
+                    colours[colour_id] = n;
                 });
                 colours
             })
             .collect();
 
-        CubeGame { id, cubes }
+        Some(CubeGame { id, cubes })
     }
 
     fn is_possible(&self, colours: [u32; 3]) -> bool {
