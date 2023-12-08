@@ -32,8 +32,8 @@ fn part2(input: &str) -> u32 {
 }
 
 impl CubeGame {
-    fn parse(input: &str) -> Option<Self> {
-        let (id, game) = input.trim_start_matches("Game ").split_once(": ")?;
+    fn parse(line: &str) -> Option<Self> {
+        let (id, game) = line.trim_start_matches("Game ").split_once(": ")?;
         let id = id.parse().ok()?;
 
         // process game
