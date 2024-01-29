@@ -4,8 +4,7 @@ const DIGITS: [&str; 9] = [
     "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
 ];
 
-fn main() {
-    let input = fs::read_to_string("./input.txt").unwrap();
+pub fn run(input: &str) {
     let result1 = find_digits(&input, false);
     let result2 = find_digits(&input, true);
 
@@ -40,13 +39,13 @@ mod test {
 
     #[test]
     fn test1() {
-        let input = fs::read_to_string("./test1.txt").unwrap();
+        let input = fs::read_to_string("./test/day01a.txt").unwrap();
         assert_eq!(find_digits(&input, false), 142)
     }
 
     #[test]
     fn test2() {
-        let input = fs::read_to_string("./test2.txt").unwrap();
+        let input = fs::read_to_string("./test/day01b.txt").unwrap();
         assert_eq!(find_digits(&input, true), 281)
     }
 }

@@ -25,8 +25,7 @@ struct Hand {
     hand_type: HandType,
 }
 
-fn main() {
-    let input = fs::read_to_string("./input.txt").unwrap();
+pub fn run(input: &str) {
     let result1 = part1(&input);
     let result2 = part2(&input);
 
@@ -170,13 +169,13 @@ mod test {
 
     #[test]
     fn test1() {
-        let input = fs::read_to_string("./test.txt").unwrap();
+        let input = fs::read_to_string("./test/day07.txt").unwrap();
         assert_eq!(part1(&input), 6440)
     }
 
     #[test]
     fn test2() {
-        let input = fs::read_to_string("./test.txt").unwrap();
+        let input = fs::read_to_string("./test/day07.txt").unwrap();
         assert_eq!(part2(&input), 5905)
     }
 }
