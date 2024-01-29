@@ -1,4 +1,4 @@
-use std::{fs, str};
+use std::str;
 
 #[derive(Debug)]
 struct Schematic {
@@ -13,23 +13,15 @@ enum Entry {
     Empty,
 }
 
-pub fn run(input: &str) {
-    let result1 = part1(&input);
-    let result2 = part2(&input);
-
-    println!("The result of part 1 is: {result1}");
-    println!("The result of part 2 is: {result2}");
-}
-
-fn part1(input: &str) -> u32 {
+pub fn part1(input: &str) -> usize {
     Schematic::parse(input)
         .parts()
         .iter()
         .map(|(number, _)| number)
-        .sum()
+        .sum::<u32>() as usize
 }
 
-fn part2(input: &str) -> u32 {
+pub fn part2(input: &str) -> usize {
     // generate list of parts and gears
     let parts = Schematic::parse(input).parts();
     let gears = {
@@ -57,7 +49,7 @@ fn part2(input: &str) -> u32 {
                 0
             }
         })
-        .sum()
+        .sum::<u32>() as usize
 }
 
 impl Schematic {
@@ -168,6 +160,7 @@ impl Schematic {
 #[cfg(test)]
 mod test {
     use super::*;
+    use std::fs;
 
     #[test]
     fn test1() {

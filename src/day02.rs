@@ -1,33 +1,25 @@
-use std::{fs, str};
+use std::str;
 
 struct CubeGame {
     id: u32,
     cubes: Vec<[u32; 3]>,
 }
 
-pub fn run(input: &str) {
-    let result1 = part1(&input);
-    let result2 = part2(&input);
-
-    println!("The result of part 1 is: {result1}");
-    println!("The result of part 2 is: {result2}");
-}
-
-fn part1(input: &str) -> u32 {
+pub fn part1(input: &str) -> usize {
     input
         .lines()
         .map(|line| CubeGame::parse(line).unwrap())
         .filter(|cubegame| cubegame.is_possible([12, 13, 14]))
         .map(|cubegame| cubegame.id)
-        .sum()
+        .sum::<u32>() as usize
 }
 
-fn part2(input: &str) -> u32 {
+pub fn part2(input: &str) -> usize {
     input
         .lines()
         .map(|line| CubeGame::parse(line).unwrap())
         .map(|cubegame| cubegame.power())
-        .sum()
+        .sum::<u32>() as usize
 }
 
 impl CubeGame {
@@ -79,6 +71,7 @@ impl CubeGame {
 #[cfg(test)]
 mod test {
     use super::*;
+    use std::fs;
 
     #[test]
     fn test1() {

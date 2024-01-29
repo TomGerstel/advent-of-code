@@ -37,35 +37,36 @@ fn main() {
         let start_time = Instant::now();
         if let Ok(input) = input {
             let input = input.trim_end();
-            let day_func = match day {
-                1 => day01::run,
-                2 => day02::run,
-                3 => day03::run,
-                4 => day04::run,
-                5 => day05::run,
-                6 => day06::run,
-                7 => day07::run,
-                //8 => day08::run,
-                //9 => day09::run,
-                //10 => day10::run,
-                //11 => day11::run,
-                //12 => day12::run,
-                //13 => day13::run,
-                //14 => day14::run,
-                //15 => day15::run,
-                //16 => day16::run,
-                //17 => day17::run,
-                //18 => day18::run,
-                //19 => day19::run,
-                //20 => day20::run,
-                //21 => day21::run,
-                //22 => day22::run,
-                //23 => day23::run,
-                //24 => day24::run,
-                //25 => day25::run,
+            let (answer1, answer2) = match day {
+                1 => (day01::part1(input), day01::part2(input)),
+                2 => (day02::part1(input), day02::part2(input)),
+                3 => (day03::part1(input), day03::part2(input)),
+                4 => (day04::part1(input), day04::part2(input)),
+                5 => (day05::part1(input), day05::part2(input)),
+                6 => (day06::part1(input), day06::part2(input)),
+                7 => (day07::part1(input), day07::part2(input)),
+                //8 => (day08::part1(input), day00::part2(input)),
+                //9 => (day09::part1(input), day00::part2(input)),
+                //10 => (day10::part1(input), day00::part2(input)),
+                //11 => (day11::part1(input), day00::part2(input)),
+                //12 => (day12::part1(input), day00::part2(input)),
+                //13 => (day13::part1(input), day00::part2(input)),
+                //14 => (day14::part1(input), day00::part2(input)),
+                //15 => (day15::part1(input), day00::part2(input)),
+                //16 => (day16::part1(input), day00::part2(input)),
+                //17 => (day17::part1(input), day00::part2(input)),
+                //18 => (day18::part1(input), day00::part2(input)),
+                //19 => (day19::part1(input), day00::part2(input)),
+                //20 => (day20::part1(input), day00::part2(input)),
+                //21 => (day21::part1(input), day00::part2(input)),
+                //22 => (day22::part1(input), day00::part2(input)),
+                //23 => (day23::part1(input), day00::part2(input)),
+                //24 => (day24::part1(input), day00::part2(input)),
+                //25 => (day25::part1(input), day00::part2(input)),
                 _ => unreachable!(),
             };
-            day_func(input);
+            println!("Part One: {}", answer1);
+            println!("Part Two: {}", answer2);
             println!("Time: {}", elapsed_since(&start_time));
         } else {
             println!("ERROR: no data");

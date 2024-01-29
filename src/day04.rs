@@ -1,18 +1,10 @@
-use std::{collections::VecDeque, fs, str};
+use std::{collections::VecDeque, str};
 
-pub fn run(input: &str) {
-    let result1 = part1(&input);
-    let result2 = part2(&input);
-
-    println!("The result of part 1 is: {result1}");
-    println!("The result of part 2 is: {result2}");
-}
-
-fn part1(input: &str) -> usize {
+pub fn part1(input: &str) -> usize {
     input.lines().map(wins).map(score).sum()
 }
 
-fn part2(input: &str) -> usize {
+pub fn part2(input: &str) -> usize {
     let mut buf = VecDeque::new();
     input.lines().map(wins).fold(0, |counter, wins| {
         let cards = 1 + buf.pop_front().unwrap_or(0);
@@ -47,6 +39,7 @@ fn score(wins: usize) -> usize {
 #[cfg(test)]
 mod test {
     use super::*;
+    use std::fs;
 
     #[test]
     fn test1() {

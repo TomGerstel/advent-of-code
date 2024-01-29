@@ -1,15 +1,15 @@
-use std::{fs, str};
+use std::str;
 
 const DIGITS: [&str; 9] = [
     "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
 ];
 
-pub fn run(input: &str) {
-    let result1 = find_digits(&input, false);
-    let result2 = find_digits(&input, true);
+pub fn part1(input: &str) -> usize {
+    find_digits(input, false)
+}
 
-    println!("The result of part 1 is: {result1}");
-    println!("The result of part 2 is: {result2}");
+pub fn part2(input: &str) -> usize {
+    find_digits(input, true)
 }
 
 fn find_digits(input: &str, part_two: bool) -> usize {
@@ -36,6 +36,7 @@ fn find_digits(input: &str, part_two: bool) -> usize {
 #[cfg(test)]
 mod test {
     use super::*;
+    use std::fs;
 
     #[test]
     fn test1() {

@@ -1,4 +1,4 @@
-use std::{cmp, fs, str};
+use std::{cmp, str};
 
 const CARD_ORDER: [char; 13] = [
     '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A',
@@ -25,15 +25,7 @@ struct Hand {
     hand_type: HandType,
 }
 
-pub fn run(input: &str) {
-    let result1 = part1(&input);
-    let result2 = part2(&input);
-
-    println!("The result of part 1 is: {result1}");
-    println!("The result of part 2 is: {result2}");
-}
-
-fn part1(input: &str) -> usize {
+pub fn part1(input: &str) -> usize {
     let hands = input
         .lines()
         .map(|line| parse(line, false))
@@ -41,7 +33,7 @@ fn part1(input: &str) -> usize {
     calculate_score(hands)
 }
 
-fn part2(input: &str) -> usize {
+pub fn part2(input: &str) -> usize {
     let hands = input
         .lines()
         .map(|line| parse(line, true))
@@ -166,6 +158,7 @@ impl cmp::Ord for Hand {
 #[cfg(test)]
 mod test {
     use super::*;
+    use std::fs;
 
     #[test]
     fn test1() {
