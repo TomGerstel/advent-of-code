@@ -23,6 +23,27 @@ fn elapsed_since(start_time: &Instant) -> String {
     }
 }
 
+trait Solution {
+    fn part1(input: &str) -> usize;
+    fn part2(input: &str) -> usize;
+}
+
+struct Challenge<const Y: usize, const D: usize>;
+
+impl Challenge<Y, D> {
+    // Define a function to load data
+}
+
+impl Solution for Challenge<2024, 1> {
+    fn part1(input: &str) -> usize {
+        3
+    }
+
+    fn part2(input: &str) -> usize {
+        5
+    }
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     let days: Vec<_> = match args.len() {
