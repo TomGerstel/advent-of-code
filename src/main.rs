@@ -68,16 +68,16 @@ impl AdventDay {
     }
 }
 
-/// Simple program to greet a person
+// Define expected command line arguments
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
-    /// Set the year
+    // Set the year
     #[arg(short, long)]
     year: usize,
 
-    /// Set the day
-    /// If no day is set, all days will be run
+    // Set the day
+    // If no day is set, all days will be run
     #[arg(short, long)]
     day: Option<usize>,
 }
@@ -91,12 +91,20 @@ fn main() {
         None => (1..=25).collect(),
     };
 
+    // Compute the solution of each day
     for day in days.into_iter() {
+        // Create advent day struct
         let advent_day = AdventDay { year, day };
+
+        // Try to load input data
         if let Ok(input) = advent_day.load_input() {
+            // Trim trailing whitespace for easy splitting into lines
             let input = input.trim_end();
 
+            // Record the time of starting computations for logging
             let start_time = Instant::now();
+
+            // Try to solve the challenge and log the time spent doing so
             if let Some(answer1) = advent_day.solve(input, Part::One) {
                 let time = elapsed_since(&start_time);
                 println!(
@@ -105,7 +113,10 @@ fn main() {
                 );
             }
 
+            // Record the time of starting computations for logging
             let start_time = Instant::now();
+
+            // Try to solve the challenge and log the time spent doing so
             if let Some(answer2) = advent_day.solve(input, Part::Two) {
                 let time = elapsed_since(&start_time);
                 println!(
