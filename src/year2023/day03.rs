@@ -160,17 +160,19 @@ impl Schematic {
 #[cfg(test)]
 mod test {
     use super::*;
-    use std::fs;
+    use std::{fs, path::PathBuf};
 
     #[test]
     fn test1() {
-        let input = fs::read_to_string("./test/day03.txt").unwrap();
+        let path: PathBuf = [".", "input", "test", "2023", "day03.txt"].iter().collect();
+        let input = fs::read_to_string(&path).unwrap();
         assert_eq!(part1(&input), 4361)
     }
 
     #[test]
     fn test2() {
-        let input = fs::read_to_string("./test/day03.txt").unwrap();
+        let path: PathBuf = [".", "input", "test", "2023", "day03.txt"].iter().collect();
+        let input = fs::read_to_string(&path).unwrap();
         assert_eq!(part2(&input), 467835)
     }
 }

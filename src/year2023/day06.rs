@@ -41,17 +41,19 @@ fn count_wins(t: usize, s: usize) -> usize {
 #[cfg(test)]
 mod test {
     use super::*;
-    use std::fs;
+    use std::{fs, path::PathBuf};
 
     #[test]
     fn test1() {
-        let input = fs::read_to_string("./test/day06.txt").unwrap();
+        let path: PathBuf = [".", "input", "test", "2023", "day06.txt"].iter().collect();
+        let input = fs::read_to_string(&path).unwrap();
         assert_eq!(part1(&input), 288)
     }
 
     #[test]
     fn test2() {
-        let input = fs::read_to_string("./test/day06.txt").unwrap();
+        let path: PathBuf = [".", "input", "test", "2023", "day06.txt"].iter().collect();
+        let input = fs::read_to_string(&path).unwrap();
         assert_eq!(part2(&input), 71503)
     }
 }

@@ -1,14 +1,10 @@
-use std::env;
+use clap::Parser;
 use std::fs;
+use std::io;
+use std::path::PathBuf;
 use std::time::Instant;
 
-mod day01;
-mod day02;
-mod day03;
-mod day04;
-mod day05;
-mod day06;
-mod day07;
+mod year2023;
 
 fn elapsed_since(start_time: &Instant) -> String {
     let elapsed = start_time.elapsed().as_micros();
@@ -23,78 +19,100 @@ fn elapsed_since(start_time: &Instant) -> String {
     }
 }
 
-trait Solution {
-    fn part1(input: &str) -> usize;
-    fn part2(input: &str) -> usize;
+enum Part {
+    One,
+    Two,
 }
 
-struct Challenge<const Y: usize, const D: usize>;
-
-impl Challenge<Y, D> {
-    // Define a function to load data
+struct AdventDay {
+    year: usize,
+    day: usize,
 }
 
-impl Solution for Challenge<2024, 1> {
-    fn part1(input: &str) -> usize {
-        3
+impl AdventDay {
+    fn load_input(&self) -> Result<std::string::String, io::Error> {
+        // Set the path for the given day
+        let path: PathBuf = [
+            ".",
+            "input",
+            "data",
+            self.year.to_string().as_str(),
+            format!("day{:02}.txt", self.day).as_str(),
+        ]
+        .iter()
+        .collect();
+
+        // Try to read the input
+        let input = fs::read_to_string(&path)?;
+        Ok(input)
     }
 
-    fn part2(input: &str) -> usize {
-        5
+    fn solve(&self, input: &str, part: Part) -> Option<usize> {
+        match (self.year, self.day, part) {
+            (2023, 1, Part::One) => Some(year2023::day01::part1(input)),
+            (2023, 1, Part::Two) => Some(year2023::day01::part2(input)),
+            (2023, 2, Part::One) => Some(year2023::day02::part1(input)),
+            (2023, 2, Part::Two) => Some(year2023::day02::part2(input)),
+            (2023, 3, Part::One) => Some(year2023::day03::part1(input)),
+            (2023, 3, Part::Two) => Some(year2023::day03::part2(input)),
+            (2023, 4, Part::One) => Some(year2023::day04::part1(input)),
+            (2023, 4, Part::Two) => Some(year2023::day04::part2(input)),
+            //(2023, 5, Part::One) => Some(year2023::day05::part1(input)),
+            //(2023, 5, Part::Two) => Some(year2023::day05::part2(input)),
+            (2023, 6, Part::One) => Some(year2023::day06::part1(input)),
+            (2023, 6, Part::Two) => Some(year2023::day06::part2(input)),
+            (2023, 7, Part::One) => Some(year2023::day07::part1(input)),
+            (2023, 7, Part::Two) => Some(year2023::day07::part2(input)),
+            _ => None,
+        }
     }
+}
+
+/// Simple program to greet a person
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    /// Set the year
+    #[arg(short, long)]
+    year: usize,
+
+    /// Set the day
+    /// If no day is set, all days will be run
+    #[arg(short, long)]
+    day: Option<usize>,
 }
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    let days: Vec<_> = match args.len() {
-        1 => (1..=25).collect(),
-        _ => args.iter().skip(1).map(|d| d.parse().unwrap()).collect(),
+    // Parse the input arguments
+    let args = Args::parse();
+    let year = args.year;
+    let days: Vec<_> = match args.day {
+        Some(day) => vec![day],
+        None => (1..=25).collect(),
     };
-    let global_start_time = Instant::now();
-    for day in &days {
-        println!("Day {}:", day);
-        let path = format!("./data/day{:02}.txt", day);
-        let input = fs::read_to_string(&path);
-        let start_time = Instant::now();
-        if let Ok(input) = input {
+
+    for day in days.into_iter() {
+        let advent_day = AdventDay { year, day };
+        if let Ok(input) = advent_day.load_input() {
             let input = input.trim_end();
-            let (answer1, answer2) = match day {
-                1 => (day01::part1(input), day01::part2(input)),
-                2 => (day02::part1(input), day02::part2(input)),
-                3 => (day03::part1(input), day03::part2(input)),
-                4 => (day04::part1(input), day04::part2(input)),
-                5 => (day05::part1(input), day05::part2(input)),
-                6 => (day06::part1(input), day06::part2(input)),
-                7 => (day07::part1(input), day07::part2(input)),
-                //8 => (day08::part1(input), day00::part2(input)),
-                //9 => (day09::part1(input), day00::part2(input)),
-                //10 => (day10::part1(input), day00::part2(input)),
-                //11 => (day11::part1(input), day00::part2(input)),
-                //12 => (day12::part1(input), day00::part2(input)),
-                //13 => (day13::part1(input), day00::part2(input)),
-                //14 => (day14::part1(input), day00::part2(input)),
-                //15 => (day15::part1(input), day00::part2(input)),
-                //16 => (day16::part1(input), day00::part2(input)),
-                //17 => (day17::part1(input), day00::part2(input)),
-                //18 => (day18::part1(input), day00::part2(input)),
-                //19 => (day19::part1(input), day00::part2(input)),
-                //20 => (day20::part1(input), day00::part2(input)),
-                //21 => (day21::part1(input), day00::part2(input)),
-                //22 => (day22::part1(input), day00::part2(input)),
-                //23 => (day23::part1(input), day00::part2(input)),
-                //24 => (day24::part1(input), day00::part2(input)),
-                //25 => (day25::part1(input), day00::part2(input)),
-                _ => unreachable!(),
-            };
-            println!("Part One: {}", answer1);
-            println!("Part Two: {}", answer2);
-            println!("Time: {}", elapsed_since(&start_time));
-        } else {
-            println!("ERROR: no data");
+
+            let start_time = Instant::now();
+            if let Some(answer1) = advent_day.solve(input, Part::One) {
+                let time = elapsed_since(&start_time);
+                println!(
+                    "{year} - Day {:02} - Part 1:\n\tanswer = {answer1}\n\ttime = {time}\n",
+                    day
+                );
+            }
+
+            let start_time = Instant::now();
+            if let Some(answer2) = advent_day.solve(input, Part::Two) {
+                let time = elapsed_since(&start_time);
+                println!(
+                    "{year} - Day {:02} - Part 2:\n\tanswer = {answer2}\n\ttime = {time}\n",
+                    day
+                );
+            }
         }
-        println!();
-    }
-    if days.len() > 1 {
-        println!("TOTAL TIME: {}", elapsed_since(&global_start_time));
     }
 }

@@ -36,17 +36,24 @@ fn find_digits(input: &str, part_two: bool) -> usize {
 #[cfg(test)]
 mod test {
     use super::*;
-    use std::fs;
+    use std::{fs, path::PathBuf};
 
     #[test]
     fn test1() {
-        let input = fs::read_to_string("./test/day01a.txt").unwrap();
+        let path: PathBuf = [".", "input", "test", "2023", "day01a.txt"]
+            .iter()
+            .collect();
+        let input = fs::read_to_string(&path).unwrap();
+
         assert_eq!(find_digits(&input, false), 142)
     }
 
     #[test]
     fn test2() {
-        let input = fs::read_to_string("./test/day01b.txt").unwrap();
+        let path: PathBuf = [".", "input", "test", "2023", "day01b.txt"]
+            .iter()
+            .collect();
+        let input = fs::read_to_string(&path).unwrap();
         assert_eq!(find_digits(&input, true), 281)
     }
 }
