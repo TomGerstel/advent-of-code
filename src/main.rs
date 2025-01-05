@@ -2,20 +2,21 @@ use clap::Parser;
 use std::fs;
 use std::io;
 use std::path::PathBuf;
+use std::time::Duration;
 use std::time::Instant;
 
 mod year2023;
 
-fn elapsed_since(start_time: &Instant) -> String {
-    let elapsed = start_time.elapsed().as_micros();
-    if elapsed >= 1_000_000 {
-        let elapsed = elapsed as f64 / 1_000_000.0;
-        format!("{elapsed:.1}s")
-    } else if elapsed >= 1000 {
-        let elapsed = elapsed as f64 / 1000.0;
-        format!("{elapsed:.1}ms")
+fn duration_to_string(duration: Duration) -> String {
+    let micros = duration.as_micros();
+    if micros >= 1_000_000 {
+        let secs = micros as f64 / 1_000_000.0;
+        format!("{secs:.1}s")
+    } else if micros >= 1000 {
+        let millis = micros as f64 / 1000.0;
+        format!("{millis:.1}ms")
     } else {
-        format!("{elapsed}µs")
+        format!("{micros}µs")
     }
 }
 
@@ -91,6 +92,9 @@ fn main() {
         None => (1..=25).collect(),
     };
 
+    // Keep track of the total computation time
+    let mut total_duration = Duration::default();
+
     // Compute the solution of each day
     for day in days.into_iter() {
         // Create advent day struct
@@ -102,28 +106,42 @@ fn main() {
             let input = input.trim_end();
 
             // Record the time of starting computations for logging
-            let start_time = Instant::now();
+            let start_instant = Instant::now();
 
             // Try to solve the challenge and log the time spent doing so
             if let Some(answer1) = advent_day.solve(input, Part::One) {
-                let time = elapsed_since(&start_time);
+                // Calculate the computation time and add to total
+                let duration = start_instant.elapsed();
+                total_duration += duration;
+
+                // Print the computation time
+                let duration_string = duration_to_string(duration);
                 println!(
-                    "{year} - Day {:02} - Part 1:\n\tanswer = {answer1}\n\ttime = {time}\n",
+                    "{year} - Day {:02} - Part 1:\n\tanswer = {answer1}\n\ttime = {duration_string}\n",
                     day
                 );
             }
 
             // Record the time of starting computations for logging
-            let start_time = Instant::now();
+            let start_instant = Instant::now();
 
             // Try to solve the challenge and log the time spent doing so
             if let Some(answer2) = advent_day.solve(input, Part::Two) {
-                let time = elapsed_since(&start_time);
+                // Calculate the computation time and add to total
+                let duration = start_instant.elapsed();
+                total_duration += duration;
+
+                // Print the computation time
+                let duration_string = duration_to_string(duration);
                 println!(
-                    "{year} - Day {:02} - Part 2:\n\tanswer = {answer2}\n\ttime = {time}\n",
+                    "{year} - Day {:02} - Part 2:\n\tanswer = {answer2}\n\ttime = {duration_string}\n",
                     day
                 );
             }
         }
     }
+
+    // Print the total computation time
+    let total_duration_string = duration_to_string(total_duration);
+    println!("Total computation time: {total_duration_string}");
 }
