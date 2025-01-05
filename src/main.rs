@@ -1,13 +1,9 @@
 use clap::Parser;
-use std::fs;
-use std::io;
-use std::path::PathBuf;
-use std::time::Duration;
-use std::time::Instant;
+use std::{fmt, fs, io, path, time};
 
 mod year2023;
 
-fn duration_to_string(duration: Duration) -> String {
+fn duration_to_string(duration: time::Duration) -> String {
     let micros = duration.as_micros();
     if micros >= 1_000_000 {
         let secs = micros as f64 / 1_000_000.0;
@@ -20,20 +16,89 @@ fn duration_to_string(duration: Duration) -> String {
     }
 }
 
+#[derive(Copy, Clone)]
 enum Part {
     One,
     Two,
 }
 
-struct AdventDay {
+struct Puzzle {
     year: usize,
     day: usize,
+    part: Part,
 }
 
-impl AdventDay {
+enum PuzzleOutcome {
+    Solved {
+        solution: usize,
+        duration: time::Duration,
+    },
+    Failed,
+}
+
+impl PuzzleOutcome {
+    fn duration(&self) -> time::Duration {
+        match self {
+            Self::Solved {
+                solution: _,
+                duration,
+            } => *duration,
+            Self::Failed => time::Duration::default(),
+        }
+    }
+}
+
+impl fmt::Display for PuzzleOutcome {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // Write preceding whitespace
+        write!(f, "\n\t")?;
+
+        // Write actual content
+        match self {
+            Self::Solved { solution, duration } => {
+                write!(f, "{} ({})", solution, duration_to_string(*duration))?
+            }
+            Self::Failed => write!(f, "No solution found!")?,
+        };
+
+        // Write trailing whitespace
+        writeln!(f)
+    }
+}
+
+impl fmt::Display for Puzzle {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let part_str: &str = match self.part {
+            Part::One => "One",
+            Part::Two => "Two",
+        };
+        write!(f, "{} - Day {:02} - Part {}", self.year, self.day, part_str)
+    }
+}
+
+impl Puzzle {
+    fn solve(&self) -> Result<time::Duration, io::Error> {
+        // Try to load input
+        let input = self.load_input()?;
+
+        // Trim trailing whitespace for easy splitting into lines
+        let input = input.trim_end();
+
+        // Actually solve the puzzle
+        let outcome = self.outcome(input);
+
+        // Print the puzzle identifier and outcome, including computation time
+        println!("{self}");
+        println!("{outcome}");
+        println!();
+
+        // Return duration for determining total computation time later
+        Ok(outcome.duration())
+    }
+
     fn load_input(&self) -> Result<std::string::String, io::Error> {
         // Set the path for the given day
-        let path: PathBuf = [
+        let path_buf: path::PathBuf = [
             ".",
             "input",
             "data",
@@ -44,26 +109,39 @@ impl AdventDay {
         .collect();
 
         // Try to read the input
-        let input = fs::read_to_string(&path)?;
+        let input = fs::read_to_string(&path_buf)?;
         Ok(input)
     }
 
-    fn solve(&self, input: &str, part: Part) -> Option<usize> {
-        match (self.year, self.day, part) {
-            (2023, 1, Part::One) => Some(year2023::day01::part1(input)),
-            (2023, 1, Part::Two) => Some(year2023::day01::part2(input)),
-            (2023, 2, Part::One) => Some(year2023::day02::part1(input)),
-            (2023, 2, Part::Two) => Some(year2023::day02::part2(input)),
-            (2023, 3, Part::One) => Some(year2023::day03::part1(input)),
-            (2023, 3, Part::Two) => Some(year2023::day03::part2(input)),
-            (2023, 4, Part::One) => Some(year2023::day04::part1(input)),
-            (2023, 4, Part::Two) => Some(year2023::day04::part2(input)),
-            //(2023, 5, Part::One) => Some(year2023::day05::part1(input)),
-            //(2023, 5, Part::Two) => Some(year2023::day05::part2(input)),
-            (2023, 6, Part::One) => Some(year2023::day06::part1(input)),
-            (2023, 6, Part::Two) => Some(year2023::day06::part2(input)),
-            (2023, 7, Part::One) => Some(year2023::day07::part1(input)),
-            (2023, 7, Part::Two) => Some(year2023::day07::part2(input)),
+    fn outcome(&self, input: &str) -> PuzzleOutcome {
+        match self.retrieve_solver() {
+            Some(solver) => {
+                // Solve the puzzle and keep track of the time spent doing so
+                let start_instant = time::Instant::now();
+                let solution = solver(input);
+                let duration = start_instant.elapsed();
+                PuzzleOutcome::Solved { solution, duration }
+            }
+            None => PuzzleOutcome::Failed,
+        }
+    }
+
+    fn retrieve_solver(&self) -> Option<fn(&str) -> usize> {
+        match (self.year, self.day, self.part) {
+            (2023, 1, Part::One) => Some(year2023::day01::part1),
+            (2023, 1, Part::Two) => Some(year2023::day01::part2),
+            (2023, 2, Part::One) => Some(year2023::day02::part1),
+            (2023, 2, Part::Two) => Some(year2023::day02::part2),
+            (2023, 3, Part::One) => Some(year2023::day03::part1),
+            (2023, 3, Part::Two) => Some(year2023::day03::part2),
+            (2023, 4, Part::One) => Some(year2023::day04::part1),
+            (2023, 4, Part::Two) => Some(year2023::day04::part2),
+            //(2023, 5, Part::One) => Some(year2023::day05::part1),
+            //(2023, 5, Part::Two) => Some(year2023::day05::part2),
+            (2023, 6, Part::One) => Some(year2023::day06::part1),
+            (2023, 6, Part::Two) => Some(year2023::day06::part2),
+            (2023, 7, Part::One) => Some(year2023::day07::part1),
+            (2023, 7, Part::Two) => Some(year2023::day07::part2),
             _ => None,
         }
     }
@@ -93,55 +171,20 @@ fn main() {
     };
 
     // Keep track of the total computation time
-    let mut total_duration = Duration::default();
+    let mut total_duration = time::Duration::default();
 
-    // Compute the solution of each day
+    // Solve both puzzles for each day
     for day in days.into_iter() {
-        // Create advent day struct
-        let advent_day = AdventDay { year, day };
-
-        // Try to load input data
-        if let Ok(input) = advent_day.load_input() {
-            // Trim trailing whitespace for easy splitting into lines
-            let input = input.trim_end();
-
-            // Record the time of starting computations for logging
-            let start_instant = Instant::now();
-
-            // Try to solve the challenge and log the time spent doing so
-            if let Some(answer1) = advent_day.solve(input, Part::One) {
-                // Calculate the computation time and add to total
-                let duration = start_instant.elapsed();
-                total_duration += duration;
-
-                // Print the computation time
-                let duration_string = duration_to_string(duration);
-                println!(
-                    "{year} - Day {:02} - Part 1:\n\tanswer = {answer1}\n\ttime = {duration_string}\n",
-                    day
-                );
-            }
-
-            // Record the time of starting computations for logging
-            let start_instant = Instant::now();
-
-            // Try to solve the challenge and log the time spent doing so
-            if let Some(answer2) = advent_day.solve(input, Part::Two) {
-                // Calculate the computation time and add to total
-                let duration = start_instant.elapsed();
-                total_duration += duration;
-
-                // Print the computation time
-                let duration_string = duration_to_string(duration);
-                println!(
-                    "{year} - Day {:02} - Part 2:\n\tanswer = {answer2}\n\ttime = {duration_string}\n",
-                    day
-                );
-            }
+        for part in [Part::One, Part::Two] {
+            let puzzle = Puzzle { year, day, part };
+            let duration = puzzle.solve();
+            total_duration += duration.unwrap_or_default();
         }
     }
 
     // Print the total computation time
     let total_duration_string = duration_to_string(total_duration);
+    println!();
     println!("Total computation time: {total_duration_string}");
+    println!();
 }
