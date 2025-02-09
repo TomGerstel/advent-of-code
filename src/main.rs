@@ -77,7 +77,7 @@ impl fmt::Display for Puzzle {
 }
 
 impl Puzzle {
-    fn solve(&self) -> Result<time::Duration, io::Error> {
+    fn load_and_solve(&self) -> Result<PuzzleOutcome, io::Error> {
         // Try to load input
         let input = self.load_input()?;
 
@@ -85,15 +85,7 @@ impl Puzzle {
         let input = input.trim_end();
 
         // Actually solve the puzzle
-        let outcome = self.outcome(input);
-
-        // Print the puzzle identifier and outcome, including computation time
-        println!("{self}");
-        println!("{outcome}");
-        println!();
-
-        // Return duration for determining total computation time later
-        Ok(outcome.duration())
+        Ok(self.solve(input))
     }
 
     fn load_input(&self) -> Result<std::string::String, io::Error> {
@@ -113,7 +105,7 @@ impl Puzzle {
         Ok(input)
     }
 
-    fn outcome(&self, input: &str) -> PuzzleOutcome {
+    fn solve(&self, input: &str) -> PuzzleOutcome {
         match self.retrieve_solver() {
             Some(solver) => {
                 // Solve the puzzle and keep track of the time spent doing so
@@ -176,9 +168,17 @@ fn main() {
     // Solve both puzzles for each day
     for day in days.into_iter() {
         for part in [Part::One, Part::Two] {
+            // Initialise the puzzle and solve it
             let puzzle = Puzzle { year, day, part };
-            let duration = puzzle.solve();
-            total_duration += duration.unwrap_or_default();
+            let outcome = puzzle.load_and_solve().unwrap();
+
+            // Do some logging
+            println!("{puzzle}");
+            println!("{outcome}");
+            println!();
+
+            // Keep track of the total computation time
+            total_duration += outcome.duration();
         }
     }
 
