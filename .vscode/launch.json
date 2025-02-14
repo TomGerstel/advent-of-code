@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug",
+            "name": "Debug 2023",
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceRoot}/target/debug/advent-of-code.exe",
@@ -19,7 +19,7 @@
             "preLaunchTask": "cargo build debug"
         },
         {
-            "name": "Release",
+            "name": "Run 2023",
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceRoot}/target/release/advent-of-code.exe",
