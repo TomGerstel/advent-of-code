@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use itertools::Itertools;
 use std::str;
 
@@ -28,7 +26,7 @@ pub fn part2(input: &str) -> usize {
 }
 
 fn parse(input: &str) -> (impl Iterator<Item = usize> + '_, [Vec<[usize; 3]>; 7]) {
-    let mut blocks = input.split("\n\n");
+    let mut blocks = input.split("\n\n").flat_map(|s| s.split("\r\n\r\n"));
     let seeds = blocks
         .next()
         .unwrap()
