@@ -27,12 +27,12 @@ fn duration_to_string(duration: time::Duration) -> String {
 #[command(version, about, long_about = None)]
 struct Args {
     // Set the year
-    #[arg(short, long)]
+    //#[arg(short, long)]
     year: usize,
 
     // Set the day
     // If no day is set, all days will be run
-    #[arg(short, long)]
+    //#[arg(short, long)]
     day: Option<usize>,
 }
 

@@ -10,7 +10,6 @@
             "request": "launch",
             "program": "${workspaceRoot}/target/debug/advent-of-code.exe",
             "args": [
-                "--year",
                 "2023"
             ],
             "cwd": "${workspaceRoot}",
@@ -24,7 +23,6 @@
             "request": "launch",
             "program": "${workspaceRoot}/target/release/advent-of-code.exe",
             "args": [
-                "--year",
                 "2023"
             ],
             "cwd": "${workspaceRoot}",
